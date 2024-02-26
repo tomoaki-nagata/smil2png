@@ -18,14 +18,19 @@ func main() {
 
 	var (
 		input   = flag.String("i", "test.svg", "input")
+		width   = flag.Int("w", 1920, "width")
+		height  = flag.Int("h", 1080, "height")
 		frames  = flag.Int("f", 10, "frames")
 		seconds = flag.Float64("s", 1, "seconds")
 	)
 	flag.Parse()
 
 	fmt.Printf("input   : %s\n", *input)
+	fmt.Printf("width   : %d\n", *width)
+	fmt.Printf("height  : %d\n", *height)
 	fmt.Printf("frames  : %d\n", *frames)
 	fmt.Printf("seconds : %f\n", *seconds)
+	fmt.Printf("(fps)   : %f\n", float64(*frames)/float64(*seconds))
 	fmt.Println("")
 
 	wd, err := os.Getwd()
@@ -49,7 +54,7 @@ func main() {
 
 	if err := chromedp.Run(ctx,
 		chromedp.Tasks{
-			chromedp.EmulateViewport(1920, 1080),
+			chromedp.EmulateViewport(int64(*width), int64(*height)),
 			chromedp.ActionFunc(func(ctx context.Context) error {
 				return emulation.SetDefaultBackgroundColorOverride().WithColor(&cdp.RGBA{0, 0, 0, 0}).Do(ctx)
 			}),
